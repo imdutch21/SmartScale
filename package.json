@@ -1,0 +1,38 @@
+{
+  "name": "nosql-assessment",
+  "version": "1.0.0",
+  "description": "A NoSQL assigment for the Studdit application",
+  "main": "src/server.js",
+  "scripts": {
+    "osx_test": "NODE_ENV='test' mocha",
+    "test": "set NODE_ENV=test& mocha",
+    "osx_start": "NODE_ENV='production' nodemon server.js",
+    "start": "set NODE_ENV=production& nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasterAryeon/nosql-assessment.git"
+  },
+  "author": "Aron Cornet, Bart Klomp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MasterAryeon/nosql-assessment/issues"
+  },
+  "homepage": "https://github.com/MasterAryeon/nosql-assessment#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
+    "express": "^4.16.4",
+    "moment": "^2.22.2",
+    "mongoose": "^5.3.14",
+    "morgan": "^1.9.1",
+    "neo4j-driver": "^1.7.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mocha-http": "^0.2.5",
+    "nodemon": "^1.18.7"
+  }
+}
