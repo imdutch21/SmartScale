@@ -1,5 +1,5 @@
 {
-  "name": "nosql-assessment",
+  "name": "smart-scale",
   "version": "1.0.0",
   "description": "API for the smart scale",
   "main": "src/server.js",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/imdutch21/SmartScale.git"
   },
-  "author": "Aron Cornet, Bart Klomp",
+  "author": "Bart Klomp, Marc de Bruine",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/imdutch21/SmartScale/issues"
