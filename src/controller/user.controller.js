@@ -1,7 +1,4 @@
-const neo = require('../config/neo4j.db');
 const User = require('../model/User').user;
-const Comment = require('../model/Comment').model;
-const Thread = require('../model/Thread');
 const ApiError = require('../model/ApiError');
 const assert = require('assert');
 

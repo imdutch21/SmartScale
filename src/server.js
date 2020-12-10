@@ -6,10 +6,7 @@ const chalk = require('chalk');
 
 // Importing routes
 const userRoutes = require('./route/user.routes');
-const threadRoutes = require('./route/thread.routes');
-const commentRoutes = require('./route/comment.routes');
-const friendshipRoutes = require('./route/friendship.route');
-
+const authRoutes = require('./route/auth.routes');
 // Importing models
 const ApiError = require('./model/ApiError');
 
@@ -18,7 +15,6 @@ const { port } = require('./config/config');
 
 // Initiate connection to MongoDB
 const mongo = require('./config/mongo.db');
-const driver = require('./config/neo4j.db');
 
 
 // bodyParser parses the body from a request
@@ -40,10 +36,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 // Defining routes
 app.use('/api', userRoutes);
-app.use('/api', threadRoutes);
-app.use('/api', commentRoutes);
-app.use('/api', friendshipRoutes);
-
+app.use('/api', authRoutes);
 
 
 // Postprocessing; catch all non-existing endpoint requests
@@ -57,6 +50,17 @@ app.use((err, req, res, next) => {
     //console.log(chalk.red(err));
     res.status((err.code || 404)).json(err).end();
 });
+
+// const User = require('./model/User').user;
+// let u1 = new User({username:"test", password:"test"});
+// u1.save((err, u) => {
+//     if (err) return console.error(err);
+//     console.log(u)
+//   });
+
+// User.findOne((err, users) =>{
+//     console.log(users);
+// })
 
 function shutdown() {
     driver.close();
