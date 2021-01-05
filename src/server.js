@@ -63,7 +63,6 @@ app.use((err, req, res, next) => {
 // })
 
 function shutdown() {
-    driver.close();
     console.log(chalk.red('[APP] Application shutting down...'));
     process.exit(0);
 }
