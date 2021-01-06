@@ -19,9 +19,8 @@ module.exports = {
         let scope = request.query.scope;
         let response_type = request.query.response_type;
         let user_locale = request.query.user_locale;
-        console.log(request.query)
+        console.log(request.body)
         let error;
-        console.log(googleClientID)
         try {
             assert(client_id !== undefined, "client_id not provided");
             assert(client_id === googleClientID, "the wrong client_id was provided");
@@ -54,11 +53,11 @@ module.exports = {
     },
     refreshToken(request, response, next) {
 
-        let grant_type = request.query.grant_type;
-        let intent = request.query.intent;
-        let assertion = request.query.assertion;
-        let consent_code = request.query.consent_code;
-        let scope = request.query.scope;
+        let grant_type = request.body.grant_type;
+        let intent = request.body.intent;
+        let assertion = request.body.assertion;
+        let consent_code = request.body.consent_code;
+        let scope = request.body.scope;
         console.log(request.query);
         console.log(request.body);
         console.log(request);
