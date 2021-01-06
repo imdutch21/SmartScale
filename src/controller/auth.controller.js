@@ -60,6 +60,8 @@ module.exports = {
         let consent_code = request.query.consent_code;
         let scope = request.query.scope;
         console.log(request.query);
+        console.log(request.body);
+        console.log(request);
         let error;
         try {
             assert(grant_type !== undefined, "client_id not provided");
