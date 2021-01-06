@@ -56,7 +56,6 @@ module.exports = {
 
         let grant_type = request.query.grant_type;
         let intent = request.query.intent;
-        let grant_type = request.query.grant_type;
         let assertion = request.query.assertion;
         let consent_code = request.query.consent_code;
         let scope = request.query.scope;
