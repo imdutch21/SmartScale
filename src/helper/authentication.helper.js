@@ -16,17 +16,18 @@ function encodeToken(data) {
     now.setMinutes(now.getMinutes() + 10)
     const playload = {
         payload: data,
-        expires:now
+        expires: now
     };
     return jwt.encode(playload, secretKey)
 }
 
 
 // Het decoden van de Token naar een username
-function decodeToken(token, callback) {
-
+function decodeToken(token, callback, secret) {
+    if (!secret)
+        secret = secretKey;
     try {
-        const payload = jwt.decode(token, secretKey);
+        const payload = jwt.decode(token, secret);
         //Check of de Token niet verlopen is.
         callback(null, payload);
     } catch (err) {

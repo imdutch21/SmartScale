@@ -9,6 +9,7 @@ const {
     decodeToken
 } = require('../helper/authentication.helper');
 const fetch = require('node-fetch');
+const jwt = require('jwt-simple');
 
 
 module.exports = {
@@ -58,9 +59,7 @@ module.exports = {
         let assertion = request.body.assertion;
         let consent_code = request.body.consent_code;
         let scope = request.body.scope;
-        console.log(request.query);
         console.log(request.body);
-        console.log(request);
         let error;
         try {
             assert(grant_type !== undefined, "client_id not provided");
@@ -74,33 +73,35 @@ module.exports = {
         }
         if (!error) {
             fetch("https://www.googleapis.com/oauth2/v1/certs").then(res => res.json()).then(body => {
-                const jwt = require('jwt-simple');
 
                 const token = assertion;
                 const certificates = body;
+                let decoded = undefined
+                try{
+                    decoded = jwt.decode(token, certificates[Object.keys(certificates)[0]]);
+                    console.log('Payload:', decoded);
 
-                // Get header information from token
-                const header = jwt.decode(token, {
-                    complete: true
-                }).header;
-                // Get the corresponding public key specified in header
-                const cert = certificates[header.kid];
-
-                // Verify token
-                jwt.verify(token, cert, {
-                    algorithms: ['RS256']
-                }, (err, payload) => {
-                    if (err) {
-                        // Not a valid token
-                        console.log('Error:', err);
-                        return;
+                } catch (error){
+                    try{
+                        decoded = jwt.decode(token, certificates[Object.keys(certificates)[1]]);
+                        console.log('Payload:', decoded);
+                    } catch(e){
+                        response.status(500).end();
+                        console.log("failed to decode")
                     }
-
-                    // Token successfully verified
-                    console.log('Payload:', payload);
-                });
+                }
+                if(decoded){
+                    response.status(200).json({
+                        access_token:encodeToken(decoded),
+                        token_type: "Bearer",
+                        "expires_in": 600
+                    }).end();
+                } else {
+                    response.status(500).end();
+                }
+            }).catch(e => {
+                response.status(500).end();
             })
-            response.status(200).end();
         }
     }
 };
