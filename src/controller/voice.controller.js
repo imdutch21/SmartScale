@@ -15,18 +15,34 @@ function handleNewFoodMeasure(params) {
         }
     }
 }
+function handleHowMuchQuestion(params) {
+    console.log(params)
+    return {
+        prompt: {
+            override: false,
+            firstSimple: {
+                speech: `You currently have 200 grams of ${params.Food}`,
+                text: ""
+            }
+        }
+    }
+}
 
 module.exports = {
     googleAsssistent(request, response, next) {
 
         console.log(request.body);
         let handler = request.body.handler.name;
-        console.log(handler)
+        console.log(request.header)
         let responseMessage = {};
         let params = request.body.session.params;
         switch (handler) {
             case "NewFoodMeasured": {
                 responseMessage = handleNewFoodMeasure(params);
+                break;
+            }
+            case "HowMuch": {
+                responseMessage = handleHowMuchQuestion(params);
                 break;
             }
         }
