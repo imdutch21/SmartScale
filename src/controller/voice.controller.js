@@ -33,7 +33,7 @@ module.exports = {
 
         console.log(request.body);
         let handler = request.body.handler.name;
-        console.log(request.header)
+        console.log(request.headers)
         let responseMessage = {};
         let params = request.body.session.params;
         switch (handler) {
