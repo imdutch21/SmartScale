@@ -8,6 +8,11 @@ const chalk = require('chalk');
 const userRoutes = require('./route/user.routes');
 const authRoutes = require('./route/auth.routes');
 const voiceRoutes = require('./route/voice.routes');
+const userRoute = require('./route/user.route');
+const scaleRoute = require('./route/scale.route');
+const productRoute = require('./route/product.route');
+const measurementRoute = require('./route/measurement.route');
+const containerRoute = require('./route/container.route');
 
 // Importing models
 const ApiError = require('./model/ApiError');
@@ -37,9 +42,13 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Defining routes
-app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.use('/api', voiceRoutes);
+app.use('/api', userRoute);
+app.use('/api', scaleRoute);
+app.use('/api', productRoute);
+app.use('/api', measurementRoute);
+app.use('/api', containerRoute);
 
 
 // Postprocessing; catch all non-existing endpoint requests
