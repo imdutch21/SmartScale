@@ -5,10 +5,9 @@ const bodyParser = require('body-parser');
 const chalk = require('chalk');
 
 // Importing routes
-const userRoutes = require('./route/user.routes');
-const authRoutes = require('./route/auth.routes');
-const voiceRoutes = require('./route/voice.routes');
 const userRoute = require('./route/user.route');
+const authRoute = require('./route/auth.route');
+const voiceRoute = require('./route/voice.route');
 const scaleRoute = require('./route/scale.route');
 const productRoute = require('./route/product.route');
 const measurementRoute = require('./route/measurement.route');
@@ -42,8 +41,8 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Defining routes
-app.use('/api', authRoutes);
-app.use('/api', voiceRoutes);
+app.use('/api', authRoute);
+app.use('/api', voiceRoute);
 app.use('/api', userRoute);
 app.use('/api', scaleRoute);
 app.use('/api', productRoute);

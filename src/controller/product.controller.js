@@ -1,4 +1,4 @@
-const Product = require('../../../Smart_Scale/src/models/Product');
+const Product = require('../model/Product');
 
 module.exports = {
     

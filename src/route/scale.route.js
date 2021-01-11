@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ScaleController = require('../controllers/scale.controller');
+const ScaleController = require('../controller/scale.controller');
 
 router.post('/scale', ScaleController.createScale);
 router.put('/scale', ScaleController.updateScale);
