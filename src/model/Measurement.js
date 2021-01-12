@@ -10,10 +10,10 @@ const MeasurementSchema = new Schema({
     measure_date: {
         type: String,
     },
-    product: [{
+    product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'product'
-    }]
+    }
 });
 
 module.exports = mongoose.model('measurement', MeasurementSchema);

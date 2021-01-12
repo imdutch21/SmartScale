@@ -7,6 +7,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     scales: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'scale'
