@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const MeasurementSchema = new Schema({
-    _id: {
-        type: String,
-        required: true
-    },
+    
     current_volume: {
-        type: BigInt,
+        type: Number,
+        required: true
     },
     measure_date: {
         type: String,
