@@ -5,11 +5,9 @@ const ContainerSchema = new Schema({
     
     container_weight: {
         type: Number,
-        required: true
     },
     max_capacity: {
         type: Number,
-        required: true
     },
     tag_id: {
         type: String,
