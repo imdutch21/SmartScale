@@ -11,7 +11,6 @@ const ContainerSchema = new Schema({
     },
     tag_id: {
         type: String,
-        required: true
     },
     measurements: [{
         type: mongoose.Schema.Types.ObjectId,
