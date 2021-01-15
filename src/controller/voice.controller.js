@@ -60,7 +60,10 @@ function handleHowMuchQuestion(params, userDetails) {
             },
             {
                 "$match": {
-                    'scale.container.measurement.product.name': params.Food
+                    'scale.container.measurement.product.name': {
+                        '$regex': '^' + params.Food + '$',
+                        '$options': 'i'
+                    }
                 }
             },
             {
@@ -101,74 +104,74 @@ function handleNewFoodMeasure(params, userDetails) {
 
     return new Promise((resolve, reject) => {
         User.aggregate([{
-            "$match": {
-                "_id": mongoose.Types.ObjectId(userDetails.payload.user._id)
-            }
-        },
-        {
-            "$lookup": {
-                "from": "scales",
-                "localField": "scales",
-                "foreignField": "_id",
-                "as": "scale"
-            }
-        },
-        {
-            $unwind: "$scale"
-        },
-        {
-            "$lookup": {
-                "from": "containers",
-                "localField": "scale.containers",
-                "foreignField": "_id",
-                "as": "scale.container"
-            }
-        },
+                "$match": {
+                    "_id": mongoose.Types.ObjectId(userDetails.payload.user._id)
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "scales",
+                    "localField": "scales",
+                    "foreignField": "_id",
+                    "as": "scale"
+                }
+            },
+            {
+                $unwind: "$scale"
+            },
+            {
+                "$lookup": {
+                    "from": "containers",
+                    "localField": "scale.containers",
+                    "foreignField": "_id",
+                    "as": "scale.container"
+                }
+            },
 
-        {
-            $unwind: "$scale.container"
-        },
-        {
-            "$lookup": {
-                "from": "measurements",
-                "localField": "scale.container.measurements",
-                "foreignField": "_id",
-                "as": "scale.container.measurement"
-            }
-        },
-        {
-            $unwind: "$scale.container.measurement"
-        },
-        {
-            "$match": {
-                'scale.container.measurement.product': null
-            }
-        }
-    ]).then((user) => {
-        console.log(user.length);
-        if (user.length >= 1) {
-            resolve({
-                prompt: {
-                    override: false,
-                    firstSimple: {
-                        speech: `We have successfully measured your ${params.Food} at ${user[0].scale.container.measurement.current_volume} grams.`,
-                        text: ""
-                    }
+            {
+                $unwind: "$scale.container"
+            },
+            {
+                "$lookup": {
+                    "from": "measurements",
+                    "localField": "scale.container.measurements",
+                    "foreignField": "_id",
+                    "as": "scale.container.measurement"
                 }
-            })
-        } else {
-            console.log("no new measurements have to be done");
-            resolve({
-                prompt: {
-                    override: false,
-                    firstSimple: {
-                        speech: `There were no new measurements detected. It might take a few seconds before our servers get notified. Please try again soon`,
-                        text: ""
-                    }
+            },
+            {
+                $unwind: "$scale.container.measurement"
+            },
+            {
+                "$match": {
+                    'scale.container.measurement.product': null
                 }
-            })
-        }
-    });
+            }
+        ]).then((user) => {
+            console.log(user.length);
+            if (user.length >= 1) {
+                resolve({
+                    prompt: {
+                        override: false,
+                        firstSimple: {
+                            speech: `We have successfully measured your ${params.Food} at ${user[0].scale.container.measurement.current_volume} grams.`,
+                            text: ""
+                        }
+                    }
+                })
+            } else {
+                console.log("no new measurements have to be done");
+                resolve({
+                    prompt: {
+                        override: false,
+                        firstSimple: {
+                            speech: `There were no new measurements detected. It might take a few seconds before our servers get notified. Please try again soon`,
+                            text: ""
+                        }
+                    }
+                })
+            }
+        });
     })
 }
 
