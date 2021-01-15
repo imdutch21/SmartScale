@@ -116,13 +116,13 @@ module.exports = {
         decodeToken(request.headers.authorization, (error, payload) => {
             console.log(payload);
             if (error) {
-                next(new ApiError("something went wrong with authorizing", 500))
+                next(new ApiError(error.toString(), 500))
             } else {
                 // console.log(request.body);
                 let handler = request.body.handler.name;
                 // console.log(request.headers)
                 let promise = new Promise((resolve, reject) => {
-                    resolve()
+                    resolve({})
                 });
                 let params = request.body.session.params;
                 switch (handler) {
@@ -134,6 +134,10 @@ module.exports = {
                         promise = handleHowMuchQuestion(params, payload);
                         break;
                     }
+                    case "createUser": {
+                        // promise = handleHowMuchQuestion(params, payload);
+                        break;
+                    }
                 }
                 promise.then((responseMessage) => {
                     responseMessage.session = request.body.session;
@@ -141,6 +145,6 @@ module.exports = {
                 })
 
             }
-        });
+        }, undefined);
     }
 }

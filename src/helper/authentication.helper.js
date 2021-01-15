@@ -24,6 +24,7 @@ function encodeToken(data) {
 
 // Het decoden van de Token naar een username
 function decodeToken(token, callback, secret) {
+    token.replaceAll("Bearer ", "")
     if (!secret)
         secret = secretKey;
     try {
