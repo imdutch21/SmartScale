@@ -17,7 +17,9 @@ const containerRoute = require('./route/container.route');
 const ApiError = require('./model/ApiError');
 
 // Importing config
-const { port } = require('./config/config');
+const {
+    port
+} = require('./config/config');
 
 // Initiate connection to MongoDB
 const mongo = require('./config/mongo.db');

@@ -72,7 +72,7 @@ module.exports = {
                 populate: {
                     path: "measurements",
                     populate: {
-                        path: "product",
+                        path: "product"
                     }
                 }
             }

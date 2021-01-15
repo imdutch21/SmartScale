@@ -12,7 +12,7 @@ const ProductSchema = new Schema({
         required: true
     },
     density: {
-        type: String,
+        type: String
     },
     experation_date: {
         type: String

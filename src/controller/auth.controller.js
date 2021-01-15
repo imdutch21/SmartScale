@@ -11,6 +11,8 @@ const {
 const fetch = require('node-fetch');
 const jwt = require('jwt-simple');
 
+const User = require('../model/User');
+
 
 module.exports = {
     authGoogle(request, response, next) {
@@ -90,15 +92,19 @@ module.exports = {
                         console.log("failed to decode")
                     }
                 }
-                if(decoded){
-                    response.status(200).json({
-                        access_token:encodeToken(decoded),
-                        token_type: "Bearer",
-                        "expires_in": 600
-                    }).end();
-                } else {
-                    response.status(500).end();
-                }
+                User.findOne({email:decoded.email}).then((user)=>{
+                    decoded.user = user;
+                    if(decoded){
+                        response.status(200).json({
+                            access_token:encodeToken(decoded),
+                            token_type: "Bearer",
+                            "expires_in": 600
+                        }).end();
+                    } else {
+                        response.status(500).end();
+                    }
+                });
+
             }).catch(e => {
                 response.status(500).end();
             })

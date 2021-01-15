@@ -9,10 +9,12 @@ const MeasurementSchema = new Schema({
     },
     measure_date: {
         type: String,
+        required: true
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'product'
+        ref: 'product',
+        required: true
     }
 });
 

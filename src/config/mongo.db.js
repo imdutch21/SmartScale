@@ -17,7 +17,11 @@ let connection = mongoose.connection
     .on('error', (error) => console.log(chalk.red('[MONGO] ' + error.toString())));
 
 
-
-
+//putting these here to make sure node has seen them once and registered the schemes.
+const Measurement = require('../model/Measurement')
+const Scale = require('../model/Scale')
+const User = require('../model/User')
+const Product = require('../model/Product')
+const Container = require('../model/Container')
 
 module.exports = connection;
