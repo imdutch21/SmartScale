@@ -93,6 +93,7 @@ module.exports = {
                     }
                 }
                 User.findOne({email:decoded.email}).then((user)=>{
+                    console.log(user);
                     decoded.user = user;
                     if(decoded){
                         response.status(200).json({

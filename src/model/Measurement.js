@@ -13,8 +13,7 @@ const MeasurementSchema = new Schema({
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'product',
-        required: true
+        ref: 'product'
     }
 });
 
