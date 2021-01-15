@@ -67,6 +67,7 @@ function handleNewFoodMeasure(params, userDetails) {
                 }
             }
         ]).then((user) => {
+            console.log(user);
             if (user.length >= 1) {
                 resolve({
                     prompt: {
@@ -110,7 +111,10 @@ function handleHowMuchQuestion(params, userDetails) {
 
 module.exports = {
     googleAsssistent(request, response, next) {
+        console.log(request.body);
+        console.log(request.headers);
         decodeToken(request.headers.authorization, (error, payload) => {
+            console.log(payload);
             if (error) {
                 next(new ApiError("something went wrong with authorizing", 500))
             } else {
