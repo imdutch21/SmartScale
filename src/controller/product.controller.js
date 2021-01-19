@@ -8,6 +8,8 @@ module.exports = {
         let err;
         let name = body.name;
         let unit = body.unit;
+        let density = body.density;
+        let experation_date = body.experation_date;
         console.log(body)
         try {
             assert(name, "product needs to have a name");
@@ -28,7 +30,9 @@ module.exports = {
                     } else {
                         let product = new Product({
                             name: name.toLowerCase(),
-                            unit: unit
+                            unit: unit,
+                            density: density,
+                            experation_date: experation_date
                         });
                         product.save().then(() => {
                             if (!product.isNew) {

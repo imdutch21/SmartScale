@@ -13,10 +13,10 @@ module.exports = {
         let err;
 
         let name = body.name;
-        let userId = body.userId;
+        let user_id = body.user_id;
         try {
             assert(name, "scale needs to have a name");
-            assert(userId, "userId needs to be provided to make a link");
+            assert(user_id, "user_id needs to be provided to make a link");
         } catch (e) {
             err = e;
             next(new ApiError(e.toString(), 412));
@@ -25,7 +25,7 @@ module.exports = {
             let scale = new Scale({
                 name: name
             });
-            User.findById(userId).then((user) => {
+            User.findById(user_id).then((user) => {
                     if (user) {
                         user.scales.push(scale);
                         Promise.all([scale.save(), user.save()]).then(() => {
