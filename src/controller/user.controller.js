@@ -63,9 +63,8 @@ module.exports = {
         response.send('test update user function');
     },
     getUser(request, response, next) {
-        let id = request.params.userId;
-        console.log(id);
-        User.findById(id).populate({
+        let email = request.params.email;
+        User.findOne({email:email}).populate({
             path: "scales",
             populate: {
                 path: "containers",
