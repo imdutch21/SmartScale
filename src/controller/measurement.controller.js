@@ -56,6 +56,7 @@ function createMeasurement(request, response, next) {
                         });
                 } else {
                     if (container_tag_id) {
+                        console.log("Made: " + container_tag_id)
                         let container = new Container({
                             tag_id: container_tag_id,
                             container_weight: 0,
