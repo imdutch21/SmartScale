@@ -5,6 +5,7 @@ const {
 } = require('../helper/authentication.helper');
 const User = require('../model/User');
 const Measurement = require('../model/Measurement');
+const Product = require('../model/Product');
 const mongoose = require("mongoose");
 
 
@@ -90,7 +91,7 @@ function handleHowMuchQuestion(params, userDetails) {
                     prompt: {
                         override: false,
                         firstSimple: {
-                            speech: `We have not found any current inventory for ${params.Food}.`,
+                            speech: `I have not found any current inventory for ${params.Food}.`,
                             text: ""
                         }
                     }
@@ -100,12 +101,11 @@ function handleHowMuchQuestion(params, userDetails) {
     })
 }
 
-function handleNewFoodMeasure(params, userDetails) {
-
+function checkForUndefinedMeasures(id) {
     return new Promise((resolve, reject) => {
         User.aggregate([{
                 "$match": {
-                    "_id": mongoose.Types.ObjectId(userDetails.payload.user._id)
+                    "_id": mongoose.Types.ObjectId(id)
                 }
             },
             {
@@ -146,21 +146,150 @@ function handleNewFoodMeasure(params, userDetails) {
                 "$match": {
                     'scale.container.measurement.product': null
                 }
+            },
+            {
+                "$sort": {
+                    'scale.container.measurement.measure_date': -1
+                }
             }
-        ]).then((user) => {
-            console.log(user.length);
-            if (user.length >= 1) {
-                resolve({
-                    prompt: {
-                        override: false,
-                        firstSimple: {
-                            speech: `We have successfully measured your ${params.Food} at ${user[0].scale.container.measurement.current_volume} grams.`,
-                            text: ""
-                        }
+        ]).then((measurements) => {
+            if (measurements.length >= 1) {
+                let mappedMeasurements = [];
+                for (let i = 0; i < measurements.length; i++) {
+                    let id = measurements[i].scale.container._id;
+                    if (mappedMeasurements[id]) {
+                        mappedMeasurements[id].push(measurements[i].scale.container.measurement)
+                    } else {
+                        mappedMeasurements[id] = [measurements[i].scale.container.measurement];
                     }
-                })
+                }
+                resolve(mappedMeasurements);
+            } else{
+                resolve([]);
+            }
+        })
+    })
+}
+
+function handleNewFoodMeasure(params, userDetails) {
+    if (params.Food) {
+        return new Promise((resolve, reject) => {
+            checkForUndefinedMeasures(userDetails.payload.user._id).then((mappedMeasurements) => {
+                let measurements;
+                let length = 0
+                console.log(length)
+
+                for (let key in mappedMeasurements) {
+                    if (!measurements)
+                        measurements = mappedMeasurements[key];
+                    length++;
+                }
+                console.log(mappedMeasurements);
+                if (length > 0) {
+
+                    Product.findOne({
+                        name: params.Food.toLowerCase()
+                    }).then((product) => {
+                        if (product) {
+                            for (let i = 0; i < measurements.length; i++) {
+                                Measurement.findByIdAndUpdate(measurements[i]._id, {
+                                    product: product
+                                }).then(()=> {
+                                    resolve({
+                                        prompt: {
+                                            override: false,
+                                            firstSimple: {
+                                                speech: `We have successfully set the contents of your container to ${params.Food} at ${measurements[0].current_volume} ${product.unit}.`,
+                                                text: ""
+                                            }
+                                        }
+                                    })
+                                });
+                            }
+                        } else {
+                            product = new Product({
+                                name: params.Food.toLowerCase(),
+                                unit: "grams"
+                            });
+                            product.save().then(() => {
+                                let promises = [];
+                                for (let i = 0; i < measurements.length; i++) {
+                                    promises.push(Measurement.findByIdAndUpdate(measurements[i]._id, {
+                                        product: product
+                                    }));
+                                }
+                                Promise.all(promises).then(()=> {
+                                    resolve({
+                                        prompt: {
+                                            override: false,
+                                            firstSimple: {
+                                                speech: `We have successfully set the contents of your container to ${params.Food} at ${measurements[0].current_volume} grams.`,
+                                                text: ""
+                                            }
+                                        }
+                                    })
+                                });
+                            })
+                        }
+                    })
+
+                } else {
+                    console.log("no new measurements have to be done");
+                    resolve({
+                        prompt: {
+                            override: false,
+                            firstSimple: {
+                                speech: `There were no new measurements detected. It might take a few seconds before our servers get notified. Please try again soon`,
+                                text: ""
+                            }
+                        }
+                    })
+                }
+
+            });
+        })
+    } else {
+        return new Promise((resolve, reject) => {
+            resolve({});
+        })
+    }
+}
+
+function handleStartMeasuring(params, userDetails) {
+    return new Promise((resolve, reject) => {
+        checkForUndefinedMeasures(userDetails.payload.user._id).then((mappedMeasurements) => {
+            let measurements;
+            let length = 0
+            for (let key in mappedMeasurements) {
+                if (!measurements)
+                    measurements = mappedMeasurements[key];
+                length++;
+            }
+            console.log(mappedMeasurements);
+            if (length > 0) {
+                if (length == 1) {
+                    resolve({
+                        prompt: {
+                            override: false,
+                            firstSimple: {
+                                speech: `What product did you measure?`,
+                                text: ""
+                            }
+                        }
+                    })
+                } else {
+                    let date = new Date(measurements[0].measure_date * 1000);
+                    resolve({
+                        prompt: {
+                            override: false,
+                            firstSimple: {
+                                speech: `There have been multiple new containers that have been measured. What product did you measure at ${date.getHours()}:${date.getMinutes()}`,
+                                text: ""
+                            }
+                        }
+                    })
+                }
             } else {
-                console.log("no new measurements have to be done");
                 resolve({
                     prompt: {
                         override: false,
@@ -171,10 +300,11 @@ function handleNewFoodMeasure(params, userDetails) {
                     }
                 })
             }
+
         });
     })
-}
 
+}
 
 module.exports = {
     googleAsssistent(request, response, next) {
@@ -205,6 +335,10 @@ module.exports = {
                     }
                     case "createUser": {
                         // promise = handleHowMuchQuestion(params, payload);
+                        break;
+                    }
+                    case "StartMeasuring": {
+                        promise = handleStartMeasuring(params, payload);
                         break;
                     }
                 }
