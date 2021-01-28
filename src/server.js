@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
+const cors = require('cors');
 
 // Importing routes
 const userRoute = require('./route/user.route');
@@ -24,12 +25,24 @@ const {
 // Initiate connection to MongoDB
 const mongo = require('./config/mongo.db');
 
-
 // bodyParser parses the body from a request
 let app = express();
 app.use(bodyParser.urlencoded({
     'extended': 'true'
 }));
+
+let whitelist = ["*"]
+app.use(cors({
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true
+}));
+
 
 // parse application/vnd.api+json as json
 app.use(bodyParser.json());

@@ -38,6 +38,7 @@ function createMeasurement(request, response, next) {
                 path: "measurements"
             }).then((foundContainer) => {
                 if (foundContainer) {
+                    measurement.current_volume = current_volume - foundContainer.container_weight;
                     if (!product_id && foundContainer.measurements.length > 0)
                         measurement.product = foundContainer.measurements[foundContainer.measurements.length - 1].product
                     foundContainer.measurements.push(measurement);
