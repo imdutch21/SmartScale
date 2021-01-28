@@ -283,8 +283,8 @@ function handleStartMeasuring(params, userDetails) {
                         prompt: {
                             override: false,
                             firstSimple: {
-                                speech: `There have been multiple new containers that have been measured. What product did you measure at ${date.getHours()}:${date.getMinutes()}`,
-                                text: ""
+                                speech: `There have been multiple new containers that have been measured. What product did you measure at ${date.getHours()} hours ${date.getMinutes()} minutes`,
+                                text: `There have been multiple new containers that have been measured. What product did you measure at ${date.getHours()}:${date.getMinutes()}`
                             }
                         }
                     })
