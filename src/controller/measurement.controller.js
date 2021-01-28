@@ -43,7 +43,7 @@ function createMeasurement(request, response, next) {
                         measurement.product = foundContainer.measurements[foundContainer.measurements.length - 1].product
                     foundContainer.measurements.push(measurement);
                     if (measurement.current_volume > foundContainer.max_capacity) {
-                        foundContainer.max_capacity = measurement.current_volume - foundContainer.container_weight;
+                        foundContainer.max_capacity = measurement.current_volume;
                     }
                     Promise.all([measurement.save(), foundContainer.save()]).then(() => {
                             if (!measurement.isNew) {
