@@ -34,11 +34,12 @@ app.use(bodyParser.urlencoded({
 let whitelist = ["*"]
 app.use(cors({
     origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
+        // console.log(origin)
+        // if (whitelist.indexOf(origin) !== -1) {
             callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
+        // } else {
+        //     callback(new Error('Not allowed by CORS'))
+        // }
     },
     credentials: true
 }));
